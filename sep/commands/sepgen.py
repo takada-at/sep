@@ -61,6 +61,7 @@ def ranking():
     savecsv(os.path.join(context.dbdir(), 'stem.csv'), stems)
 
 commands = {
+    'prepare': preparedir,
     'text': convert.iterdir,
     'ranking': ranking,
     'cooccurence': cooccurence,
@@ -74,7 +75,7 @@ def _execute_simple(args):
 def main():
     parser = argparse.ArgumentParser(description='generate somedata')
     subpersers = parser.add_subparsers(title='commands')
-    for command in ('text','ranking','cooccurence', 'taggedranking'):
+    for command in ('prepare', 'text','ranking','cooccurence', 'taggedranking'):
         com = subpersers.add_parser(command)
         com.set_defaults(func=commands[command])
 
@@ -84,8 +85,6 @@ def main():
     graphperser.add_argument('-l', '--limit', default=1300, dest='limit', help='minimum co-occurence', type=int)
     graphperser.add_argument('--weighted', action='store_true', dest='weighted')
     graphperser.set_defaults(func=graph.graphdraw)
-
-    preparedir()
     args = parser.parse_args()
     opt = dict(vars(args))
     del(opt['func'])

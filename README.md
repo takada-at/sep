@@ -12,6 +12,7 @@ pip install -r requirements.txt
 
 Usage
 ```
+python bin/sepgen.py prepare
 scrapy crawl entry
 python bin/sepgen.py coocurence
 python bin/sepgen.py graph
