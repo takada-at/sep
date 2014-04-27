@@ -5,7 +5,7 @@
 import io
 import sep.util as util
 from sep.items import Html
-import sep.convert
+import sep.commands.convert
 
 class SavePipeline(object):
     def process_item(self, item, spider):
@@ -18,4 +18,4 @@ class SavePipeline(object):
 
 class ConvertPipeline(object):
     def process_item(self, item, spider):
-        sep.convert.handlefile(item['filepath'])
+        sep.commands.convert.handlefile(item['filepath'])

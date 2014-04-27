@@ -22,7 +22,7 @@ def fetcharticle(selector):
     paragraphs = []
     for p in sel.xpath('(//p|//blockquote|//h1|//h2|//h3)'):
         string = p.extract()
-        paragraphs.append(nltk.clean_html(string.replace("\n","")))
+        paragraphs.append(nltk.clean_html(string.replace("\n"," ")))
 
     return u"\n".join(paragraphs)
 

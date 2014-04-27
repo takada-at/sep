@@ -1,3 +1,4 @@
-./db/*
-./save/*
-./text/*
+*.pyc
+/db/*
+/save/*
+/text/*
