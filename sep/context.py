@@ -5,10 +5,9 @@ from sep import nltkwrapper
 import nltk
 
 HOMEDIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '../'))
-SAVEDIR=os.path.join(HOMEDIR, "save")
-TEXTDATADIR=os.path.join(HOMEDIR, "text")
-DBDIR = os.path.join(HOMEDIR, "db")
-
+SAVEDIR=os.path.join(HOMEDIR, "data","html")
+TEXTDATADIR=os.path.join(HOMEDIR, "data", "text")
+DBDIR = os.path.join(HOMEDIR, "data", "db")
 
 class Context():
     def load(self):

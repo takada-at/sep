@@ -8,8 +8,8 @@ from sep import context
 from sep import nltkwrapper
 from sep import ranking as rankmod
 from sep.ranking import loadnnranking
-from sep.commands import graph
-from sep.commands import convert
+from sep.service import graph
+from sep.service import convert
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__main__)

@@ -1,4 +1,4 @@
 *.pyc
-/db/*
-/save/*
-/text/*
+/data/db/*
+/data/html/*
+/data/text/*
