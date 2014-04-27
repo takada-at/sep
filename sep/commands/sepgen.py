@@ -74,13 +74,14 @@ def _execute_simple(args):
 def main():
     parser = argparse.ArgumentParser(description='generate somedata')
     subpersers = parser.add_subparsers(title='commands')
-    for command in ('text','ranking','cooccurence'):
+    for command in ('text','ranking','cooccurence', 'taggedranking'):
         com = subpersers.add_parser(command)
         com.set_defaults(func=commands[command])
 
     graphperser = subpersers.add_parser('graph')
     graphperser.add_argument('-w', '--targetword', default=None, dest='targetword')
     graphperser.add_argument('-o', '--filename', default=None, dest='filename')
+    graphperser.add_argument('-l', '--limit', default=1300, dest='limit', help='minimum co-occurence', type=int)
     graphperser.set_defaults(func=graph.graphdraw)
 
     preparedir()

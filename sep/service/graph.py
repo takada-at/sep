@@ -9,9 +9,10 @@ from sep import nltkwrapper
 from sep import context
 from sep.service import ranking
 
-def load():
+def load(limit=1300):
     stemmer = ranking.loadorgword()
-    ranks = ranking.loadnnranking(stemmer)
+    ranks = ranking.loadtaggedranking(stemmer)
+    ranks = [(w, cnt) for w,tag,cnt in ranks]
     rankdict = dict(ranks)
     words = set(w[0] for w in ranks)
     dbdir = context.dbdir()
@@ -25,11 +26,11 @@ def load():
                 edges.append((word0,word1,int(count)))
 
     edges.sort(lambda x,y:cmp(y[2],x[2]))
-    edges = [(w0,w1,k) for (w0,w1,k) in edges if k>1200]
+    edges = [(w0,w1,k) for (w0,w1,k) in edges if k>limit]
     return (edges, rankdict)
 
-def loadgraph():
-    edges,countdata = load()
+def loadgraph(limit):
+    edges,countdata = load(limit)
     graph = networkx.Graph()
     for word0,word1,weight in edges:
         graph.add_node(word0, count=countdata[word0])
@@ -46,8 +47,8 @@ def color(degree):
     else:
         return (0.9,0.2,0.9)
 
-def graphdraw(targetword=None, filename=None):
-    graph = loadgraph()
+def graphdraw(targetword=None, filename=None, limit=1300):
+    graph = loadgraph(limit=limit)
     nodelist = graph.nodes()
     if targetword:
         graph = networkx.ego_graph(graph, targetword)

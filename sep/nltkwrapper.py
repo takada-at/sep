@@ -37,6 +37,7 @@ class Stem():
     # der Naturのせいでおかしくなるので上書き
     dic = {
         'natur': 'nature',
+        'philosophe': 'philosopher',
         }
     def __init__(self):
         self.stemmer = nltk.PorterStemmer()
