@@ -1,9 +1,18 @@
 # sep processing
 
-scraping and natural language processing for Stanford Encyclopedia of Philosophy.
+Scraping and Natural Language Processing for Stanford Encyclopedia of Philosophy.
+
+
+Install
+```
+git clone https://github.com/takada-at/sep.git
+cd sep/
+pip install -r requirements.txt
+```
 
 Usage
 ```
 scrapy crawl entry
 python bin/sepgen.py coocurence
+python bin/sepgen.py graph
 ```
