@@ -63,15 +63,25 @@ commands = {
     'graph': graph.graphdraw,
 }
 
+def _execute_simple(args):
+    args.func()
 def main():
-    parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('command')
-    parser.add_argument('option', nargs='*')
+    parser = argparse.ArgumentParser(description='generate somedata')
+    subpersers = parser.add_subparsers(title='commands')
+    for command in ('text','ranking','cooccurence'):
+        com = subpersers.add_parser(command)
+        com.set_defaults(func=commands[command])
+
+    graphperser = subpersers.add_parser('graph')
+    graphperser.add_argument('-w', '--targetword', default=None, dest='targetword')
+    graphperser.add_argument('-o', '--filename', default=None, dest='filename')
+    graphperser.set_defaults(func=graph.graphdraw)
+    
     args = parser.parse_args()
-    if args.option:
-        commands.get(args.command)(*args.option)
-    else:
-        commands.get(args.command)()
+
+    opt = dict(vars(args))
+    del(opt['func'])
+    args.func(**opt)
 
 if __name__ == '__main__':
     main()
