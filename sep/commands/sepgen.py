@@ -13,6 +13,12 @@ from sep.service import ranking as rankmod
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+def preparedir():
+    dirs = [context.datadir(), context.graphdir(), context.dbdir(), context.textdatadir()]
+    for dirname in dirs:
+        if not os.path.exists(dirname):
+            os.mkdir(dirname)
+
 def savecsv(filename, data):
     logger.info('save to %s', filename)
     with io.open(filename, 'w') as fio:
@@ -76,9 +82,9 @@ def main():
     graphperser.add_argument('-w', '--targetword', default=None, dest='targetword')
     graphperser.add_argument('-o', '--filename', default=None, dest='filename')
     graphperser.set_defaults(func=graph.graphdraw)
-    
-    args = parser.parse_args()
 
+    preparedir()
+    args = parser.parse_args()
     opt = dict(vars(args))
     del(opt['func'])
     args.func(**opt)

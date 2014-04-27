@@ -5,6 +5,7 @@ from sep import nltkwrapper
 import nltk
 
 HOMEDIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '../'))
+DATADIR = os.path.join(HOMEDIR, 'data')
 SAVEDIR=os.path.join(HOMEDIR, "data","html")
 TEXTDATADIR=os.path.join(HOMEDIR, "data", "text")
 DBDIR = os.path.join(HOMEDIR, "data", "db")
@@ -13,6 +14,9 @@ GRAPHDIR = os.path.join(HOMEDIR, "data", "graph")
 class Context():
     def load(self):
         self.texts, self.rawtexts, self.collections = createcollection()
+
+def datadir():
+    return DATADIR
 
 def graphdir():
     return GRAPHDIR

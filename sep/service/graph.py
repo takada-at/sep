@@ -4,7 +4,6 @@ import io
 import networkx
 import os
 import matplotlib.pyplot as plt
-from random import random
 import nltk
 from sep import nltkwrapper
 from sep import context
@@ -46,12 +45,13 @@ def color(degree):
         return (0.2,0.6,0.6)
     else:
         return (0.9,0.2,0.9)
+
 def graphdraw(targetword=None, filename=None):
     graph = loadgraph()
     nodelist = graph.nodes()
     if targetword:
         graph = networkx.ego_graph(graph, targetword)
-    
+
     colors = [color(deg) for n,deg in networkx.degree(graph).items()]
     size = [attr['count']/5.0 for k,attr in graph.nodes(data=True)]
     width = [attr['count']/1000.0 for n0,n1,attr in graph.edges(data=True)]
