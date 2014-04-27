@@ -82,6 +82,7 @@ def main():
     graphperser.add_argument('-w', '--targetword', default=None, dest='targetword')
     graphperser.add_argument('-o', '--filename', default=None, dest='filename')
     graphperser.add_argument('-l', '--limit', default=1300, dest='limit', help='minimum co-occurence', type=int)
+    graphperser.add_argument('--weighted', action='store_true', dest='weighted')
     graphperser.set_defaults(func=graph.graphdraw)
 
     preparedir()

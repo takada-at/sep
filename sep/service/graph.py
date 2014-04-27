@@ -47,15 +47,19 @@ def color(degree):
     else:
         return (0.9,0.2,0.9)
 
-def graphdraw(targetword=None, filename=None, limit=1300):
+def graphdraw(targetword=None, filename=None, limit=1300, weighted=False):
     graph = loadgraph(limit=limit)
     nodelist = graph.nodes()
     if targetword:
         graph = networkx.ego_graph(graph, targetword)
 
     colors = [color(deg) for n,deg in networkx.degree(graph).items()]
-    size = [attr['count']/5.0 for k,attr in graph.nodes(data=True)]
-    width = [attr['count']/1000.0 for n0,n1,attr in graph.edges(data=True)]
+    if weighted:
+        size = [attr['count']/5.0 for k,attr in graph.nodes(data=True)]
+        width = [attr['count']/1000.0 for n0,n1,attr in graph.edges(data=True)]
+    else:
+        size = 1000
+        width = 0.5
 
     plt.figure(3,figsize=(12,12))
     pos = networkx.spring_layout(graph, scale=2.0)
