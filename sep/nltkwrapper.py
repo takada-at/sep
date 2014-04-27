@@ -10,10 +10,11 @@ from nltk.probability import FreqDist
 from nltk.probability import ConditionalFreqDist as CFD
 
 class ParagraphIndex():
-    def __init__(self, rawtexts, normalizer):
+    def __init__(self, rawtexts, normalizer, paragraph_func=None):
+        if paragraph_func is None: paragraph_func=paragraphs
         tk2p = CFD((normalizer.normalize(token), (i,j))
                    for i,article in enumerate(rawtexts)
-                   for j,para in enumerate(paragraphs(article))
+                   for j,para in enumerate(paragraph_func(article))
                    for token in para if normalizer.ok(token))
         self._tk2p = tk2p
 
@@ -33,6 +34,10 @@ class ParagraphIndex():
         return fd
         
 class Stem():
+    # der Naturのせいでおかしくなるので上書き
+    dic = {
+        'natur': 'nature',
+        }
     def __init__(self):
         self.stemmer = nltk.PorterStemmer()
         self._orgwords = defaultdict(set)
@@ -46,6 +51,7 @@ class Stem():
         for key,item in data.iteritems():
             self._orgwords[key].add(item)
     def orgword(self,stem):
+        if stem in self.dic: return self.dic[stem]
         orgs = list(self._orgwords[stem])
         orgs.sort(lambda x,y:cmp(len(x),len(y)))
         return orgs[0]
@@ -58,7 +64,7 @@ class Vocab():
         self._index = None
     def _createindex(self):
         normalizer = Normalizer(stemmer=self.stemmer)
-        self._index = ParagraphIndex(self.ctx.rawtexts, normalizer)
+        self._index = ParagraphIndex(self.ctx.rawtexts, normalizer, sencences)
     def cooccurence(self, words):
         if not self._index: self._createindex()
         d = FreqDist()
@@ -105,6 +111,16 @@ def paragraphs(article):
         tokens = nltk.wordpunct_tokenize(para)
         if len(tokens)>0:
             paragraphs.append(tokens)
+
+    return paragraphs
+
+def sencences(article):
+    paragraphs = []
+    for para in article.split(u"\n"):
+        if para==u"":
+            continue
+
+        paragraphs += [nltk.word_tokenize(sent) for sent in nltk.sent_tokenize(para)]
 
     return paragraphs
 

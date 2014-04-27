@@ -25,7 +25,7 @@ def load():
                 edges.append((word0,word1,int(count)))
 
     edges.sort(lambda x,y:cmp(y[2],x[2]))
-    edges = [(w0,w1,k) for (w0,w1,k) in edges if k>3000]
+    edges = [(w0,w1,k) for (w0,w1,k) in edges if k>1200]
     return (edges, rankdict)
 
 def loadgraph():
@@ -34,7 +34,7 @@ def loadgraph():
     for word0,word1,weight in edges:
         graph.add_node(word0, count=countdata[word0])
         graph.add_node(word1, count=countdata[word1])
-        graph.add_edge(word0,word1,weight=weight*0.0001, count=weight)
+        graph.add_edge(word0,word1,weight=weight*0.0004, count=weight)
 
     return graph
 
