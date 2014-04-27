@@ -6,16 +6,15 @@ import io
 import os
 from sep import context
 from sep import nltkwrapper
-from sep import ranking as rankmod
-from sep.ranking import loadnnranking
-from sep.service import graph
 from sep.service import convert
+from sep.service import graph
+from sep.service import ranking as rankmod
 
 logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__main__)
+logger = logging.getLogger(__name__)
 
 def savecsv(filename, data):
-    logger().info('save to %s', filename)
+    logger.info('save to %s', filename)
     with io.open(filename, 'w') as fio:
         for row in data:
             fio.write(u"\t".join(map(unicode, row)) + u"\n")
@@ -27,9 +26,9 @@ def graphdata():
 def taggedranking():
     ranks = rankmod.loadtaggedranking()
     savecsv(os.path.join(context.dbdir(), 'taggedranking.csv'), ranks)
-    
+
 def nnranking():
-    ranks = loadnnranking()
+    ranks = rankmod.loadnnranking()
     savecsv(os.path.join(context.dbdir(), 'nnranking.csv'), ranks)
 
 def cooccurence():
@@ -46,7 +45,7 @@ def cooccurence():
     savecsv(os.path.join(context.dbdir(), 'ranking.csv'), ranking)
     savecsv(os.path.join(context.dbdir(), 'cooccurence.csv'), cooc)
     savecsv(os.path.join(context.dbdir(), 'stem.csv'), stems)
-    
+
 def ranking():
     ctx = context.Context()
     vocab = nltkwrapper.Vocab(ctx)
@@ -60,16 +59,19 @@ commands = {
     'ranking': ranking,
     'cooccurence': cooccurence,
     'taggedranking': taggedranking,
-    'graphdata': graphdata,
-    'graph': graph.graphdraw,
     'nnranking': nnranking,
+    'graph': graph.graphdraw,
 }
 
 def main():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('command')
+    parser.add_argument('option', nargs='*')
     args = parser.parse_args()
-    commands.get(args.command)()
+    if args.option:
+        commands.get(args.command)(*args.option)
+    else:
+        commands.get(args.command)()
 
 if __name__ == '__main__':
     main()

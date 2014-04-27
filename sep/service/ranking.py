@@ -23,7 +23,7 @@ def loadorgword():
             stem,org = line.rstrip().split("\t")
             dic[stem] = org
 
-    stemmer = Stem()
+    stemmer = nltkwrapper.Stem()
     stemmer.loaddata(dic)
     return stemmer
     
@@ -37,30 +37,23 @@ def loadranking():
 
     return ranking
 
-def create_normalized_ranking(stemmer=None):
+def create_orgword_ranking(stemmer=None):
     if stemmer is None:
-        stemmer = nltkwrapper.Stem()
+        stemmer = loadorgword()
 
-    counter = Counter()
     ranking = loadranking()
-    for word, count in ranking:
-        stem = stemmer.stem(word)
-        counter[stem] += count
-
-    rank = counter.items()
-    rank.sort(lambda x,y:cmp(y[1],x[1]))
-    return (rank,stemmer)
+    ranking = [(stemmer.orgword(w), c) for w,c in ranking]
+    return (ranking,stemmer)
 
 def loadtaggedranking(stemmer=None):
     taggedranking = []
-    ranking,stemmer = create_normalized_ranking(stemmer=None)
-    for stem,count in ranking:
-        word = stemmer.orgword(stem)
+    ranking,stemmer = create_orgword_ranking(stemmer=stemmer)
+    for word,count in ranking:
         word,tag = nltk.pos_tag([word])[0]
         taggedranking.append((word,tag,int(count)))
 
     return taggedranking
 
 def loadnnranking(stemmer=None):
-    taggedranking = loadtaggedranking(stemmer=None)
+    taggedranking = loadtaggedranking(stemmer=stemmer)
     return [(w[0],w[2]) for w in taggedranking if w[1]=='NN']

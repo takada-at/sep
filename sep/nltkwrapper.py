@@ -44,7 +44,7 @@ class Stem():
         return stem
     def loaddata(self,data):
         for key,item in data.iteritems():
-            self._orgwords.add(item)
+            self._orgwords[key].add(item)
     def orgword(self,stem):
         orgs = list(self._orgwords[stem])
         orgs.sort(lambda x,y:cmp(len(x),len(y)))
