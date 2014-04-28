@@ -38,9 +38,8 @@ def nnranking():
     savecsv(os.path.join(context.dbdir(), 'nnranking.csv'), ranks)
 
 def cooccurence():
-    ctx = context.Context()
     logger.info('vocabrary load...')
-    vocab = nltkwrapper.Vocab(ctx)
+    vocab = nltkwrapper.Vocab(context)
     ranking = vocab.vocab(300)
     stems = vocab.stemmer.getdict().items()
     logger.info('load words coocurence...')
@@ -53,8 +52,7 @@ def cooccurence():
     savecsv(os.path.join(context.dbdir(), 'stem.csv'), stems)
 
 def ranking():
-    ctx = context.Context()
-    vocab = nltkwrapper.Vocab(ctx)
+    vocab = nltkwrapper.Vocab(context)
     ranking = vocab.vocab(300)
     stems = vocab.stemmer.getdict().items()
     savecsv(os.path.join(context.dbdir(), 'ranking.csv'), ranking)

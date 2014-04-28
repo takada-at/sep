@@ -6,22 +6,34 @@ from collections import defaultdict
 import os
 import nltk
 from nltk.corpus import stopwords
+from nltk.corpus.reader import PlaintextCorpusReader
 from nltk.probability import FreqDist
 from nltk.probability import ConditionalFreqDist as CFD
 
+def reader(ctx):
+    u"""
+        def __init__(self, root, fileids,
+                 word_tokenizer=WordPunctTokenizer(),
+                 sent_tokenizer=nltk.data.LazyLoader(
+                     'tokenizers/punkt/english.pickle'),
+                 para_block_reader=read_blankline_block,
+                 encoding=None):
+    """
+    reader= PlaintextCorpusReader(ctx.textdatadir(), '.*.txt')
+    return reader
+
 class ParagraphIndex():
-    def __init__(self, rawtexts, normalizer, paragraph_func=None, words=None):
-        if paragraph_func is None: paragraph_func=paragraphs
+    def __init__(self, paragraphs, normalizer, words=None):
         if words:
-            tk2p = CFD((normalizer.normalize(token), (i,j))
-                       for i,article in enumerate(rawtexts)
-                       for j,para in enumerate(paragraph_func(article))
-                       for token in para if token in words and normalizer.ok(token))
+            tk2p = CFD((normalizer.normalize(token), i)
+                       for i,para in enumerate(paragraphs)
+                       for token in para
+                       if normalizer.ok(token) and normalizer.normalize(token) in words)
         else:
-            tk2p = CFD((normalizer.normalize(token), (i,j))
-                       for i,article in enumerate(rawtexts)
-                       for j,para in enumerate(paragraph_func(article))
-                       for token in para if normalizer.ok(token))
+            tk2p = CFD((normalizer.normalize(token), i)
+                       for i,para in enumerate(paragraphs)
+                       for token in para
+                       if normalizer.ok(token))
         self._tk2p = tk2p
 
     def score(self, words):
@@ -65,13 +77,15 @@ class Stem():
 
 class Vocab():
     def __init__(self,ctx):
+        self.reader = reader(ctx)
         self.ctx = ctx
         self.stemmer = Stem()
         self._fdist = None
         self._index = None
     def _createindex(self, words=None):
+        paras = self.reader.sents()
         normalizer = Normalizer(stemmer=self.stemmer)
-        self._index = ParagraphIndex(self.ctx.rawtexts, normalizer, paragraph_func=sencences, words=words)
+        self._index = ParagraphIndex(paras, normalizer, words=words)
     def cooccurence(self, words):
         if not self._index: self._createindex(words=words)
         d = FreqDist()
@@ -84,8 +98,9 @@ class Vocab():
         return d
     def _createfdist(self):
         normalizer = Normalizer(stemmer=self.stemmer)
-        self.ctx.load()
-        self.words = [normalizer.normalize(word) for word in self.ctx.collections if normalizer.ok(word)]
+        #self.ctx.load()
+        words = self.reader.words()
+        self.words = [normalizer.normalize(word) for word in words if normalizer.ok(word)]
         self._fdist = nltk.FreqDist(self.words)
         self.normalizer = normalizer
     def vocab(self, num=100):
