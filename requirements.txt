@@ -1,2 +1,5 @@
 Scrapy==0.22.2
 nltk==2.0.4
+networkx==1.8.1
+mock==1.0.1
+pytest==2.5.2

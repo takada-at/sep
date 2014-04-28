@@ -71,5 +71,5 @@ def graphdraw(targetword=None, filename=None, limit=1300, weighted=False):
     plt.yticks([])
     dirname = context.graphdir()
 
-    if filename is None: filename='graph.gif'
+    if filename is None: filename='graph.png'
     plt.savefig(os.path.join(dirname, filename))
