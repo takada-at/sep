@@ -10,12 +10,18 @@ from nltk.probability import FreqDist
 from nltk.probability import ConditionalFreqDist as CFD
 
 class ParagraphIndex():
-    def __init__(self, rawtexts, normalizer, paragraph_func=None):
+    def __init__(self, rawtexts, normalizer, paragraph_func=None, words=None):
         if paragraph_func is None: paragraph_func=paragraphs
-        tk2p = CFD((normalizer.normalize(token), (i,j))
-                   for i,article in enumerate(rawtexts)
-                   for j,para in enumerate(paragraph_func(article))
-                   for token in para if normalizer.ok(token))
+        if words:
+            tk2p = CFD((normalizer.normalize(token), (i,j))
+                       for i,article in enumerate(rawtexts)
+                       for j,para in enumerate(paragraph_func(article))
+                       for token in para if token in words and normalizer.ok(token))
+        else:
+            tk2p = CFD((normalizer.normalize(token), (i,j))
+                       for i,article in enumerate(rawtexts)
+                       for j,para in enumerate(paragraph_func(article))
+                       for token in para if normalizer.ok(token))
         self._tk2p = tk2p
 
     def score(self, words):
@@ -63,11 +69,11 @@ class Vocab():
         self.stemmer = Stem()
         self._fdist = None
         self._index = None
-    def _createindex(self):
+    def _createindex(self, words=None):
         normalizer = Normalizer(stemmer=self.stemmer)
-        self._index = ParagraphIndex(self.ctx.rawtexts, normalizer, sencences)
+        self._index = ParagraphIndex(self.ctx.rawtexts, normalizer, paragraph_func=sencences, words=words)
     def cooccurence(self, words):
-        if not self._index: self._createindex()
+        if not self._index: self._createindex(words=words)
         d = FreqDist()
         for i,word0 in enumerate(words):
             for word1 in words[i+1:]:
