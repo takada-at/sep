@@ -53,7 +53,8 @@ def graphdraw(targetword=None, filename=None, limit=1300, weighted=False):
     if targetword:
         graph = networkx.ego_graph(graph, targetword)
 
-    colors = [color(deg) for n,deg in networkx.degree(graph).items()]
+    colordic = dict((n,color(deg)) for n,deg in networkx.degree(graph).items())
+    colors = [colordic[n] for n in graph.nodes()]
     if weighted:
         size = [attr['count']/5.0 for k,attr in graph.nodes(data=True)]
         width = [attr['count']/1000.0 for n0,n1,attr in graph.edges(data=True)]
@@ -73,3 +74,4 @@ def graphdraw(targetword=None, filename=None, limit=1300, weighted=False):
 
     if filename is None: filename='graph.png'
     plt.savefig(os.path.join(dirname, filename))
+    networkx.write_gml(graph,os.path.join(dirname,'graph.gml'))
