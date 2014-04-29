@@ -62,6 +62,9 @@ def graphdraw(targetword=None, filename=None, limit=1300, weighted=False):
         size = 1000
         width = 0.5
 
+    _write_image(graph, colors, width, size, filename)
+
+def _write_image(graph, colors, width, size, filename):
     plt.figure(3,figsize=(12,12))
     pos = networkx.spring_layout(graph, scale=2.0)
     networkx.draw_networkx_nodes(graph, pos, node_size = size, node_color=colors, alpha=0.8)
@@ -74,4 +77,3 @@ def graphdraw(targetword=None, filename=None, limit=1300, weighted=False):
 
     if filename is None: filename='graph.png'
     plt.savefig(os.path.join(dirname, filename))
-    networkx.write_gml(graph,os.path.join(dirname,'graph.gml'))
