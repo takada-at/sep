@@ -7,7 +7,7 @@ from scrapy.selector import Selector
 import nltk
 
 def iterdir():
-    dirname = context.dirname()
+    dirname = context.htmldir()
     for fpath in os.listdir(dirname):
         fullpath = os.path.join(dirname, fpath)
         if os.path.isfile(fullpath):
