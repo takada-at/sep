@@ -9,6 +9,7 @@ from sep import nltkwrapper
 from sep.service import convert
 from sep.service import graph
 from sep.service import ranking as rankmod
+from sep.service import biblio
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -24,6 +25,13 @@ def savecsv(filename, data):
     with io.open(filename, 'w') as fio:
         for row in data:
             fio.write(u"\t".join(map(unicode, row)) + u"\n")
+
+def bibliocount():
+    counter = biblio.count()
+    items = counter.items()
+    items.sort(lambda x,y: cmp(y[1],x[1]))
+    items = [[author, year, title, count] for ((author, year, title), count) in items]
+    savecsv(os.path.join(context.dbdir(), 'biblio.csv'), items)
 
 def graphdata():
     data = graph.load()
@@ -65,7 +73,7 @@ commands = {
     'cooccurence': cooccurence,
     'taggedranking': taggedranking,
     'nnranking': nnranking,
-    'graph': graph.graphdraw,
+    'biblio': bibliocount,
 }
 
 def _execute_simple(args):
@@ -73,7 +81,7 @@ def _execute_simple(args):
 def main():
     parser = argparse.ArgumentParser(description='generate somedata')
     subpersers = parser.add_subparsers(title='commands')
-    for command in ('prepare', 'text','ranking','cooccurence', 'taggedranking'):
+    for command in commands.keys():
         com = subpersers.add_parser(command)
         com.set_defaults(func=commands[command])
 
