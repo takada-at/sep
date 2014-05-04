@@ -112,12 +112,15 @@ def parseauthor(item):
     # remove comment such as 'Barnes, J. [O. Testudo, pseud.],'
     item = re.sub(commentreg, '', item)
     item = item.replace('[','').replace(']','')
+    if '(' in item and ')' not in item:
+        return ''
+
     nameparts = [_normalizepart(p.strip()) for p in re.split(splitreg, item) if p]
     if len(nameparts)==0:
         return ''
 
     if len(nameparts)==1:
-        return nameparts[0]
+        return _normalizefullname(nameparts[0])
 
     # ex. Quine, W.V.O
     # ex. Lewis, David, and Gideon Rosen
@@ -135,15 +138,11 @@ def parseauthor(item):
         else:
             author += ', ' + cname
 
-    if '(ed.)' in author:
-        author = author.replace(' (ed.)', '')
+    if '(ed.)' in author or ' ed. ' in author:
+        author = author.replace(' (ed.)', '').replace(' ed.', '')
         author += ' (ed.)'
 
-    author = _sharpendot(author)
-    while author[-1] == '.':
-        author = author[:-1]
-
-    return author
+    return _normalizefullname(author)
 
 def _normalizepart(part):
     if part.startswith('and '):
@@ -151,6 +150,12 @@ def _normalizepart(part):
 
     return part
 
+def _normalizefullname(author):
+    author = _sharpendot(author)
+    while len(author) and author[-1] == '.':
+        author = author[:-1]
+
+    return author
 def normalizefirstname(firstname):
     if not firstname: return firstname
     if len(firstname)==1 and "A" < firstname < "Z":

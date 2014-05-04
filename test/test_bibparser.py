@@ -108,3 +108,7 @@ def test_bibitem():
     assert 1981 == p19['year']
     assert 'J. Barnes' == p19['author']
 
+    i20 = u"<li>Jackson, Frank ed. 1991: <em>Conditionals</em>. Oxford: Clarendon"
+    p20 = regbibparser.parseitem(i20)
+    assert 1991 == p20['year']
+    assert 'Frank Jackson (ed.)' == p20['author']
