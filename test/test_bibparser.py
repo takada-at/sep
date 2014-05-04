@@ -14,13 +14,14 @@ def test_bibitem():
     assert 'The Epistemology of Testimony' == p0['title']
     i1 = "<li><em>Ethica seu Scito teipsum</em>. Edited by R. M. Ilgner in <em>Petri Abaelardi opera theologica</em>. Corpus christianorum (continuatio mediaevalis) Vol. 190. Brepols: Turnholt 2001.</li>"
     p1 = regbibparser.parseitem(i1)
-    assert 2001 == p1['year']
-    assert 'Ethica seu Scito teipsum' == p1['title']
+    assert p1 is None
+    #assert 2001 == p1['year']
+    #assert 'Ethica seu Scito teipsum' == p1['title']
 
     i2 = u"<li>Fairweather, E. R. (1995) <em>A Scholastic Miscellany</em>. Westminster: John Knox Press. Excerpt from Abelard's commentary on <em>Romans</em>.</li>"
     p2 = regbibparser.parseitem(i2)
     assert 1995 == p2['year']
-    assert 'E. R. Fairweather' == p2['author']
+    assert 'E.R. Fairweather' == p2['author']
     assert 'A Scholastic Miscellany' == p2['title']
 
     i3 = u"Davidson, Donald, 1963. “Actions, Reasons, Causes,” in Davidson 1980: 3–19"
@@ -72,13 +73,38 @@ def test_bibitem():
     assert 'The Morality of Freedom' == p11['title']
     assert 'Joseph Raz' == p11['author']
 
-def test_mergeauthors():
-    dic = {
-        ("D. Lewis", 1986, "On the Plurality of Worlds"): 17,
-        ("David Lewis", 1986, "On the Plurality of Worlds"): 9,
-        ("T. Parsons", 1980, "Nonexistent Objects"): 9,
-    }
-    newdic = biblio.mergeauthors(Counter(dic))
-    assert 26 == newdic[('David Lewis', 1986, "On the Plurality of Worlds")]
-    assert 9 == newdic[("T. Parsons", 1980, "Nonexistent Objects")]
+    i12 = u"Quine, W. V. O., 1953, “Two Dogmas of Empiricism,” From a Logical Point of View, Cambridge, MA: Harvard University Press. First version of the paper, without any reference to Duhem, in The<em> Philosophical Review</em>, 60 (1951): 20–53."
+    p12 = regbibparser.parseitem(i12)
+    assert 'W.V.O. Quine' == p12['author']
+
+    i13 = u"Lewis, David, and Gideon Rosen, 2003, “Postscript to ‘Things Qua Truth-makers’: Negative Existentials,” in Lillehammer & Rodriguez-Pereyra (eds.) 2003: 39–41."
+    p13 = regbibparser.parseitem(i13)
+    assert 'David Lewis and Gideon Rosen' == p13['author']
+
+    i14 = u"Lewis, D. and S. Lewis, 1970, “Holes,” Australasian Journal of Philosophy, 48: 206–212."
+    p14 = regbibparser.parseitem(i14)
+    assert 'D. Lewis and S. Lewis' == p14['author']
+
+    i15 = u"Hardy, J. D., H. J. Wolff and H. Goodell (1952). <em>Pain Sensations and Reactions</em>. Baltimore, MD: Williams and Wilkins."
+    p15 = regbibparser.parseitem(i15)
+    assert 'J.D. Hardy, H. J. Wolff and H. Goodell' == p15['author']
+
+    i16 = u"Jevons, W. S. [1858]. The Social Cesspools of Sydney No. 1. — The Rocks. <em>The Sydney Morning Herald</em>, October 7, 1858, typescript provided by Michael V. White."
+    p16 = regbibparser.parseitem(i16)
+    assert 'W.S. Jevons' == p16['author']
+    assert 1858 == p16['year']
+
+    i17 = u'<font color="gray">[Loeb edition with English translation.]</font>'
+    p17 = regbibparser.parseitem(i17)
+    assert p17 is None
+
+    i18 = u"Dover, K[enneth] J. 1968, <em>Aristophanes: Clouds</em>, Oxford: Clarendon Press."
+    p18 = regbibparser.parseitem(i18)
+    assert 1968 == p18['year']
+    assert 'Kenneth J. Dover' == p18['author']
+
+    i19 = u"Barnes, J. [O. Testudo, pseud.], 1981, “Space for Zeno,” <em>Deucalion</em>, 33/34: 131–45. J."
+    p19 = regbibparser.parseitem(i19)
+    assert 1981 == p19['year']
+    assert 'J. Barnes' == p19['author']
 
