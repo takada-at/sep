@@ -112,3 +112,8 @@ def test_bibitem():
     p20 = regbibparser.parseitem(i20)
     assert 1991 == p20['year']
     assert 'Frank Jackson (ed.)' == p20['author']
+
+    i21 = u"Braun, D.,1993, “Empty Names”, Noûs, 27: 449–69."
+    p21 = regbibparser.parseitem(i21)
+    assert 1993 == p21['year']
+    assert 'D. Braun' == p21['author']

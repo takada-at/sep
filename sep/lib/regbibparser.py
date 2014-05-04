@@ -115,6 +115,7 @@ def parseauthor(item):
     if '(' in item and ')' not in item:
         return ''
 
+    if len(item) and item[-1] == ',':item=item[:-1]
     nameparts = [_normalizepart(p.strip()) for p in re.split(splitreg, item) if p]
     if len(nameparts)==0:
         return ''
